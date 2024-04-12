@@ -3,8 +3,11 @@ import { SignUpParams } from './auth.intefaces';
 
 @Injectable()
 export class AuthService {
-  signUp(signUpParams: SignUpParams): void {
+  handleSignUp(signUpParams: SignUpParams): void {
     console.log(JSON.stringify(signUpParams, null, 2));
-    // const {email, passWord, } = signUpParams;
+    const { email, password, fullName, phone, userName, userType } =
+      signUpParams;
+
+    const isAccountExist = await;
   }
 }

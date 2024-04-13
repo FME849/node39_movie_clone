@@ -11,10 +11,8 @@ export class AuthController {
 
   @ApiBody({ type: SignUpDto })
   @Post('sign-up')
-  signUp(@Body() signUpParams: SignUpParams): string {
-    this.authService.handleSignUp(signUpParams);
-
-    return 'signUp';
+  signUp(@Body() signUpParams: SignUpParams) {
+    return this.authService.handleSignUp(signUpParams);
   }
 
   @Post('sign-in')

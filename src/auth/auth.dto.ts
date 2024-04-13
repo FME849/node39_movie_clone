@@ -17,5 +17,5 @@ export class SignUpDto {
   userName: string;
 
   @ApiProperty()
-  userTyper: string;
+  userType: string;
 }

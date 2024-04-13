@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInParams, SignUpParams } from './auth.interfaces';
-import { ApiTags, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiBody, ApiHeaders } from '@nestjs/swagger';
 import { SignInDto, SignUpDto } from './auth.dto';
+import { AuthGuard } from 'src/guard/auth.guard';
 
 @ApiTags('UserManagement')
 @Controller('auth')
@@ -19,5 +20,13 @@ export class AuthController {
   @Post('sign-in')
   signIn(@Body() signInParams: SignInParams) {
     return this.authService.handleSignIn(signInParams);
+  }
+
+  @ApiHeaders([{ name: 'token', required: true }])
+  @Get('user')
+  @UseGuards(AuthGuard)
+  getUser(@Req() req: any) {
+    console.log(req.jwtPayload);
+    return 'get user';
   }
 }

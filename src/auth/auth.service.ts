@@ -37,11 +37,7 @@ export class AuthService {
         return newCreateAccount;
       }
     } catch (error) {
-      if (error instanceof ForbiddenException) {
-        return error;
-      } else {
-        throw new InternalServerErrorException('Internal server error');
-      }
+      return handleError(error);
     }
   }
 }

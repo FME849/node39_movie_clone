@@ -8,14 +8,22 @@ export class SignUpDto {
   password: string;
 
   @ApiProperty()
-  fullName: string;
+  fullName?: string;
 
   @ApiProperty()
-  phone: string;
+  phone?: string;
 
   @ApiProperty()
-  userName: string;
+  userName?: string;
 
   @ApiProperty()
-  userType: string;
+  userType?: string;
+}
+
+export class SignInDto {
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  password: string;
 }

@@ -1,11 +1,8 @@
-import {
-  ForbiddenException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { SignUpParams } from './auth.intefaces';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { SignInParams, SignUpParams } from './auth.interfaces';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { exclude, handleError } from 'src/utils/helper';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -40,6 +37,39 @@ export class AuthService {
         });
 
         return newCreateAccount;
+      }
+    } catch (error) {
+      return handleError(error);
+    }
+  }
+
+  async handleSignIn(signInParams: SignInParams) {
+    try {
+      const { email, password } = signInParams;
+      const account = await this.prisma.users.findFirst({
+        where: {
+          email,
+        },
+      });
+
+      if (!account) {
+        throw new ForbiddenException('Email not found');
+      } else {
+        if (!bcrypt.compareSync(password, account.pass_word)) {
+          throw new ForbiddenException('Password incorrect');
+        } else {
+          const payload = {
+            userId: account.user_id,
+            email: account.email,
+            userType: account.user_type,
+          };
+          const accessToken = await this.jwt.signAsync(payload);
+          const accountWithoutPassword = exclude(account, ['pass_word']);
+          return {
+            accessToken,
+            account: accountWithoutPassword,
+          };
+        }
       }
     } catch (error) {
       return handleError(error);

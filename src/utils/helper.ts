@@ -9,3 +9,9 @@ export const handleError = (error: any) => {
     });
   }
 };
+
+export const exclude = (data: Record<string, any>, keys: string[]) => {
+  return Object.fromEntries(
+    Object.entries(data).filter(([key]) => !keys.includes(key)),
+  );
+};

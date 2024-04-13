@@ -6,3 +6,8 @@ export interface SignUpParams {
   phone?: string;
   userType?: string;
 }
+
+export interface SignInParams {
+  email: string;
+  password: string;
+}

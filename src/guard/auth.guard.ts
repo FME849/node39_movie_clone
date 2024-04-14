@@ -5,28 +5,25 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Observable } from 'rxjs';
 import { jwtSecret } from 'src/utils/jwt';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private jwt: JwtService) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     return this.validateRequest(request);
   }
 
-  private async validateRequest(request) {
+  private validateRequest(request) {
     const { token } = request.headers;
     if (!token) {
       throw new UnauthorizedException('Token not found');
     }
 
     try {
-      const payload = await this.jwt.verifyAsync(token, {
+      const payload = this.jwt.verify(token, {
         secret: jwtSecret,
       });
       request['jwtPayload'] = payload;

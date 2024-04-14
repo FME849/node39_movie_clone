@@ -10,7 +10,7 @@ import { jwtSecret } from './utils/jwt';
       global: true,
       secret: jwtSecret,
       signOptions: {
-        expiresIn: '60s',
+        expiresIn: '1d',
         algorithm: 'HS256',
       },
     }),

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from 'src/decorator/role.decorator';
 
 export class SignUpDto {
   @ApiProperty()
@@ -15,9 +16,6 @@ export class SignUpDto {
 
   @ApiProperty()
   userName?: string;
-
-  @ApiProperty()
-  userType?: string;
 }
 
 export class SignInDto {
@@ -26,4 +24,9 @@ export class SignInDto {
 
   @ApiProperty()
   password: string;
+}
+
+export class AddUserDto extends SignUpDto {
+  @ApiProperty({ enum: ['Admin', 'User'], enumName: 'userType' })
+  userType: Role;
 }

@@ -18,8 +18,7 @@ export class AuthService {
 
   async handleSignUp(signUpParams: SignUpParams) {
     try {
-      const { email, password, fullName, phone, userName, userType } =
-        signUpParams;
+      const { email, password, fullName, phone, userName } = signUpParams;
 
       const isAccountExist = await this.prisma.users.findFirst({
         where: { email },
@@ -34,7 +33,6 @@ export class AuthService {
           full_name: fullName,
           phone,
           user_name: userName,
-          user_type: userType.toUpperCase(),
         };
         const newCreateAccount = await this.prisma.users.create({
           data: newUser,

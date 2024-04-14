@@ -1,8 +1,12 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { SignInParams, SignUpParams } from './auth.interfaces';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { exclude, handleError } from 'src/utils/helper';
+import { addResponseInfo, exclude, handleError } from 'src/utils/helper';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -22,7 +26,7 @@ export class AuthService {
       });
 
       if (isAccountExist) {
-        throw new ForbiddenException('Account existed');
+        throw new BadRequestException('Account existed');
       } else {
         const newUser = {
           email,
@@ -30,7 +34,7 @@ export class AuthService {
           full_name: fullName,
           phone,
           user_name: userName,
-          user_type: userType,
+          user_type: userType.toUpperCase(),
         };
         const newCreateAccount = await this.prisma.users.create({
           data: newUser,
@@ -53,10 +57,10 @@ export class AuthService {
       });
 
       if (!account) {
-        throw new ForbiddenException('Email not found');
+        throw new BadRequestException('Email not found');
       } else {
         if (!bcrypt.compareSync(password, account.pass_word)) {
-          throw new ForbiddenException('Password incorrect');
+          throw new UnauthorizedException('Password incorrect');
         } else {
           const payload = {
             userId: account.user_id,

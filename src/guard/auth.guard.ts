@@ -19,11 +19,11 @@ export class AuthGuard implements CanActivate {
     return this.validateRequest(request);
   }
 
-  private async validateRequest(request: any) {
-    if (!request.headers) {
-      return false;
-    }
+  private async validateRequest(request) {
     const { token } = request.headers;
+    if (!token) {
+      throw new UnauthorizedException('Token not found');
+    }
 
     try {
       const payload = await this.jwt.verifyAsync(token, {
@@ -31,7 +31,7 @@ export class AuthGuard implements CanActivate {
       });
       request['jwtPayload'] = payload;
     } catch (error) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid token');
     }
 
     return true;

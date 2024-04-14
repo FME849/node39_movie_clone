@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignInParams, SignUpParams } from './auth.interfaces';
+import { SignInParams, SignUpParams, AddUserParams } from './auth.interfaces';
 import { ApiTags, ApiBody, ApiHeaders } from '@nestjs/swagger';
-import { SignInDto, SignUpDto } from './auth.dto';
+import { AddUserDto, SignInDto, SignUpDto } from './auth.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { Role, Roles } from 'src/decorator/role.decorator';
 import { RolesGuard } from 'src/guard/roles.guard';
@@ -25,11 +25,12 @@ export class AuthController {
   }
 
   @ApiHeaders([{ name: 'token', required: true }])
+  @ApiBody({ type: AddUserDto })
   @Post('add-user')
   @Roles(Role.Admin)
   @UseGuards(AuthGuard)
   @UseGuards(RolesGuard)
-    console.log(req.jwtPayload);
-    return 'get user';
+  addUser(@Req() req: any, @Body() addUserParams: AddUserParams) {
+    return this.authService.handleAddUser(addUserParams);
   }
 }

@@ -3,7 +3,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { SignInParams, SignUpParams } from './auth.interfaces';
+import { AddUserParams, SignInParams, SignUpParams } from './auth.interfaces';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { addResponseInfo, exclude, handleError } from 'src/utils/helper';
@@ -78,6 +78,40 @@ export class AuthService {
             'Successfully sign-in',
           );
         }
+      }
+    } catch (error) {
+      return handleError(error);
+    }
+  }
+
+  async handleAddUser(addUserParams: AddUserParams) {
+    try {
+      const { email, password, fullName, phone, userName, userType } =
+        addUserParams;
+
+      const isAccountExist = await this.prisma.users.findFirst({
+        where: { email },
+      });
+
+      if (isAccountExist) {
+        throw new BadRequestException('Account existed');
+      } else {
+        const newUser = {
+          email,
+          pass_word: bcrypt.hashSync(password, 10),
+          full_name: fullName,
+          phone,
+          user_name: userName,
+          user_type: userType.toUpperCase(),
+        };
+        const newCreateAccount = await this.prisma.users.create({
+          data: newUser,
+        });
+
+        return addResponseInfo(
+          newCreateAccount,
+          `Successfully add new ${userType} account`,
+        );
       }
     } catch (error) {
       return handleError(error);

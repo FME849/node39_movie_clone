@@ -40,7 +40,10 @@ export class AuthService {
           data: newUser,
         });
 
-        return newCreateAccount;
+        return addResponseInfo(
+          newCreateAccount,
+          'Successfully sign-up new account',
+        );
       }
     } catch (error) {
       return handleError(error);
@@ -69,10 +72,13 @@ export class AuthService {
           };
           const accessToken = await this.jwt.signAsync(payload);
           const accountWithoutPassword = exclude(account, ['pass_word']);
-          return {
-            accessToken,
-            account: accountWithoutPassword,
-          };
+          return addResponseInfo(
+            {
+              accessToken,
+              account: accountWithoutPassword,
+            },
+            'Successfully sign-in',
+          );
         }
       }
     } catch (error) {

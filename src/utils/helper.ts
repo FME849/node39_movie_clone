@@ -15,3 +15,14 @@ export const exclude = (data: Record<string, any>, keys: string[]) => {
     Object.entries(data).filter(([key]) => !keys.includes(key)),
   );
 };
+
+export const addResponseInfo = (
+  response: Record<string, any>,
+  message = '',
+) => {
+  return {
+    data: response,
+    message,
+    date: new Date(),
+  };
+};

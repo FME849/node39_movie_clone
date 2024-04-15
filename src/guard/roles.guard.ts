@@ -16,7 +16,6 @@ export class RolesGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    console.log(requiredRoles, '<<< required role');
 
     if (requiredRoles.length === 0) {
       return true;
@@ -27,6 +26,6 @@ export class RolesGuard implements CanActivate {
       secret: jwtSecret,
     });
 
-    return requiredRoles.some((role) => userType.toUpperCase === role);
+    return requiredRoles.some((role) => userType.toUpperCase() === role);
   }
 }

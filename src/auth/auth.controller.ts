@@ -2,7 +2,7 @@ import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInParams, SignUpParams, AddUserParams } from './auth.interfaces';
 import { ApiTags, ApiBody, ApiHeaders } from '@nestjs/swagger';
-import { AddUserDto, SignInDto, SignUpDto } from './auth.dto';
+import { AddUserDto, SignInDto, SignUpDto } from './dto/auth.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { Role, Roles } from 'src/decorator/role.decorator';
 import { RolesGuard } from 'src/guard/roles.guard';

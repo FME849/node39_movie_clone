@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { addResponseInfo, exclude, handleError } from 'src/utils/helper';
 
@@ -32,6 +32,28 @@ export class UserService {
         paginatedUsers,
         'Successfully get paginated users list',
       );
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async getUserById(id: number, payload: Record<string, any>) {
+    try {
+      const { userId } = payload;
+      if (userId !== id) {
+        throw new ForbiddenException();
+      }
+
+      const userInfo = await this.prisma.users.findUnique({
+        where: {
+          user_id: userId,
+        },
+        include: {
+          book_ticket: true,
+        },
+      });
+      const userInfoWithoutPassword = exclude(userInfo, ['pass_word']);
+      return addResponseInfo(userInfoWithoutPassword);
     } catch (error) {
       handleError(error);
     }

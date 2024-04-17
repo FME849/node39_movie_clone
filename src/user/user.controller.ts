@@ -1,15 +1,17 @@
 import {
   Controller,
   Get,
+  Param,
   ParseIntPipe,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Role, Roles } from 'src/decorator/role.decorator';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { RolesGuard } from 'src/guard/roles.guard';
-import { ApiHeaders, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiHeaders, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('UserManagement')
 @Controller('user')
@@ -37,5 +39,14 @@ export class UserController {
     @Query('itemsPerPage', ParseIntPipe) itemsPerPage,
   ) {
     return this.userService.getPaginatedUsers(page, itemsPerPage);
+  }
+
+  @ApiParam({ name: 'userId', type: 'number' })
+  @ApiHeaders([{ name: 'token', required: true }])
+  @Get(':userId')
+  @UseGuards(AuthGuard)
+  findUserById(@Param('userId', ParseIntPipe) userId: number, @Req() req) {
+    const { jwtPayload: payload } = req;
+    return this.userService.getUserById(userId, payload);
   }
 }

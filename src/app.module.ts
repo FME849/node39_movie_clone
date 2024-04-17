@@ -4,10 +4,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtSecret } from './utils/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    AuthModule,
     JwtModule.register({
       global: true,
       secret: jwtSecret,
@@ -19,6 +19,8 @@ import { join } from 'path';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
+    AuthModule,
+    UserModule,
   ],
 })
 export class AppModule {}

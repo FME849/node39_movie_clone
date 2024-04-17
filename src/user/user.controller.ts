@@ -25,4 +25,17 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @ApiQuery({ name: 'page', type: 'number' })
+  @ApiQuery({ name: 'itemsPerPage', type: 'number' })
+  @ApiHeaders([{ name: 'token', required: true }])
+  @Get('pagination')
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard)
+  @UseGuards(RolesGuard)
+  findWithPagination(
+    @Query('page', ParseIntPipe) page,
+    @Query('itemsPerPage', ParseIntPipe) itemsPerPage,
+  ) {
+    return this.userService.getPaginatedUsers(page, itemsPerPage);
+  }
 }

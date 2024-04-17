@@ -20,4 +20,20 @@ export class UserService {
       handleError(error);
     }
   }
+
+  async getPaginatedUsers(page: number, itemsPerPage: number) {
+    try {
+      const skip = (page - 1) * itemsPerPage;
+      const paginatedUsers = await this.prisma.users.findMany({
+        skip,
+        take: itemsPerPage,
+      });
+      return addResponseInfo(
+        paginatedUsers,
+        'Successfully get paginated users list',
+      );
+    } catch (error) {
+      handleError(error);
+    }
+  }
 }

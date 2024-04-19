@@ -5,6 +5,7 @@ import { jwtSecret } from './utils/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
+import { TheaterModule } from './theater/theater.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from './user/user.module';
     }),
     AuthModule,
     UserModule,
+    TheaterModule,
   ],
 })
 export class AppModule {}

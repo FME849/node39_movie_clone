@@ -15,4 +15,10 @@ export class TheaterController {
   ) {
     return this.theaterService.getTheaterSystems(systemId);
   }
+
+  @ApiQuery({ name: 'systemId', required: true, type: Number })
+  @Get('theater-group')
+  getTheaterGroup(@Query('systemId', ParseIntPipe) systemId: number) {
+    return this.theaterService.getTheaterGroups(systemId);
+  }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   ParseIntPipe,
   Post,
   Query,
@@ -37,5 +38,10 @@ export class MovieController {
     @Body() updateMovieParams: UpdateMovieDto,
   ) {
     return this.movieService.updateMovie(movieId, updateMovieParams);
+  }
+
+  @Get('banner')
+  getBanner() {
+    return this.movieService.getBanners();
   }
 }

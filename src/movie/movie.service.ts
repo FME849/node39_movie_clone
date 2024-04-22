@@ -48,4 +48,13 @@ export class MovieService {
       handleError(error);
     }
   }
+
+  async getBanners() {
+    try {
+      const res = await this.prisma.banners.findMany();
+      return addResponseInfo(res, 'Successfully get banners');
+    } catch (error) {
+      handleError(error);
+    }
+  }
 }

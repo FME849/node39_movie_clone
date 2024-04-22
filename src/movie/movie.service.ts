@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateMovieDto } from './dto/create-movie.dto';
+import { CreateMovieDto } from './dto/movie.dto';
 import { addResponseInfo, handleError } from 'src/utils/helper';
 
 @Injectable()

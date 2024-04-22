@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { MovieService } from './movie.service';
-import { CreateMovieDto } from './dto/create-movie.dto';
+import { CreateMovieDto } from './dto/movie.dto';
 import { ApiHeaders, ApiTags } from '@nestjs/swagger';
 import { Role, Roles } from 'src/decorator/role.decorator';
 import { AuthGuard } from 'src/guard/auth.guard';

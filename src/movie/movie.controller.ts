@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto, UpdateMovieDto } from './dto/movie.dto';
-import { ApiHeaders, ApiTags } from '@nestjs/swagger';
+import { ApiHeaders, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Role, Roles } from 'src/decorator/role.decorator';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { RolesGuard } from 'src/guard/roles.guard';
@@ -43,5 +43,11 @@ export class MovieController {
   @Get('banner')
   getBanner() {
     return this.movieService.getBanners();
+  }
+
+  @Get('/')
+  @ApiQuery({ name: 'movieName', required: false })
+  getMovies(@Query('movieName') movieName?: string) {
+    return this.movieService.getMovies(movieName);
   }
 }

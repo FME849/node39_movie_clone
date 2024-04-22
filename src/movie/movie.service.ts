@@ -57,4 +57,24 @@ export class MovieService {
       handleError(error);
     }
   }
+
+  async getMovies(movieName?: string) {
+    try {
+      let res;
+      if (movieName) {
+        res = await this.prisma.movies.findMany({
+          where: {
+            movie_name: {
+              contains: movieName,
+            },
+          },
+        });
+      } else {
+        res = await this.prisma.movies.findMany();
+      }
+      return addResponseInfo(res, 'Successfully get movies');
+    } catch (error) {
+      handleError(error);
+    }
+  }
 }

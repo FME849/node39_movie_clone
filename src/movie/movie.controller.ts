@@ -1,6 +1,13 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { MovieService } from './movie.service';
-import { CreateMovieDto } from './dto/movie.dto';
+import { CreateMovieDto, UpdateMovieDto } from './dto/movie.dto';
 import { ApiHeaders, ApiTags } from '@nestjs/swagger';
 import { Role, Roles } from 'src/decorator/role.decorator';
 import { AuthGuard } from 'src/guard/auth.guard';
@@ -18,5 +25,17 @@ export class MovieController {
   @UseGuards(RolesGuard)
   createMovie(@Body() createMovieParams: CreateMovieDto) {
     return this.movieService.createMovie(createMovieParams);
+  }
+
+  @ApiHeaders([{ name: 'token', required: true }])
+  @Post('update-movie')
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard)
+  @UseGuards(RolesGuard)
+  updateMovie(
+    @Query('movieId', ParseIntPipe) movieId: number,
+    @Body() updateMovieParams: UpdateMovieDto,
+  ) {
+    return this.movieService.updateMovie(movieId, updateMovieParams);
   }
 }

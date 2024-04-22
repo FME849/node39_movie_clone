@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateMovieDto } from './dto/movie.dto';
-import { addResponseInfo, handleError } from 'src/utils/helper';
+import { CreateMovieDto, UpdateMovieDto } from './dto/movie.dto';
+import { addResponseInfo, handleError, toSnakeCase } from 'src/utils/helper';
+import type { movies } from '@prisma/client';
 
 @Injectable()
 export class MovieService {
@@ -10,9 +11,7 @@ export class MovieService {
   async createMovie(movie: CreateMovieDto) {
     try {
       const newMovie = {
-        movie_name: movie.movieName,
-        description: movie.description,
-        trailer: movie.trailer,
+        ...toSnakeCase<movies>(movie),
         premiere_date: new Date(movie.premiereDate).toISOString(),
         rating: movie.rating || 5,
         is_hot: movie.isHot || false,
@@ -23,6 +22,28 @@ export class MovieService {
         data: newMovie,
       });
       return addResponseInfo(res, 'Successfully create new movie');
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async updateMovie(movieId: number, movie: UpdateMovieDto) {
+    try {
+      const currentMovie = await this.prisma.movies.findUnique({
+        where: {
+          movie_id: movieId,
+        },
+      });
+
+      if (!currentMovie) {
+        throw new BadRequestException('Invalid movie');
+      }
+
+      const newMovie = {
+        ...currentMovie,
+        ...toSnakeCase<Partial<movies>>(movie),
+      };
+      return addResponseInfo(newMovie, 'Successfully update movie');
     } catch (error) {
       handleError(error);
     }

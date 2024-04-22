@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 
 export class CreateMovieDto {
   @ApiProperty()
@@ -28,3 +28,5 @@ export class CreateMovieDto {
   @ApiProperty({ default: true })
   isComingSoon?: boolean;
 }
+
+export class UpdateMovieDto extends PartialType(CreateMovieDto) {}

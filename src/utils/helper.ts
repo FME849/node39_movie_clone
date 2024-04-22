@@ -27,3 +27,13 @@ export const addResponseInfo = (
     date: new Date(),
   };
 };
+
+export const toSnakeCase = <T>(obj: Record<string, any>): T => {
+  const keys = Object.keys(obj);
+  const newObj = {};
+  keys.forEach((key) => {
+    const snakeKey = key.replace(/([A-Z])/g, '_$1').toLowerCase();
+    newObj[snakeKey] = obj[key];
+  });
+  return newObj as T;
+};

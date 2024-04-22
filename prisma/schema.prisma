@@ -38,18 +38,18 @@ model chairs {
 }
 
 model movies {
-  movie_id        Int        @id @default(autoincrement())
-  movie_name      String     @db.VarChar(100)
-  trailer         String?    @db.VarChar(100)
-  image           String?    @db.VarChar(100)
-  description     String     @db.VarChar(225)
-  premiere_date   DateTime?  @db.Date
-  rating          Int?
-  is_hot          Boolean?
-  is_showing      Boolean?
-  is_comming_soon Boolean?
-  banners         banners[]
-  showtime        showtime[]
+  movie_id       Int        @id @default(autoincrement())
+  movie_name     String     @db.VarChar(100)
+  trailer        String?    @db.VarChar(100)
+  image          String?    @db.VarChar(100)
+  description    String     @db.VarChar(225)
+  premiere_date  DateTime   @db.Date
+  rating         Int?
+  is_hot         Boolean?   @default(false)
+  is_showing     Boolean?   @default(false)
+  is_coming_soon Boolean?   @default(true)
+  banners        banners[]
+  showtime       showtime[]
 }
 
 model showtime {

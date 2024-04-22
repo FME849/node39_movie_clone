@@ -13,7 +13,7 @@ export class TheaterService {
         selector['where'] = { system_id: systemId };
       }
       const res = await this.prisma.theater_system.findMany(selector);
-      return addResponseInfo(res);
+      return addResponseInfo(res, 'Successfully get theater systems');
     } catch (error) {
       handleError(error);
     }
@@ -29,7 +29,7 @@ export class TheaterService {
           theater: true,
         },
       });
-      return addResponseInfo(res);
+      return addResponseInfo(res, 'Successfully get theater groups');
     } catch (error) {
       handleError(error);
     }

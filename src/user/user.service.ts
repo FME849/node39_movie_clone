@@ -53,7 +53,10 @@ export class UserService {
         },
       });
       const userInfoWithoutPassword = exclude(userInfo, ['pass_word']);
-      return addResponseInfo(userInfoWithoutPassword);
+      return addResponseInfo(
+        userInfoWithoutPassword,
+        'Successfully get user info',
+      );
     } catch (error) {
       handleError(error);
     }

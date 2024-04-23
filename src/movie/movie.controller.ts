@@ -45,9 +45,21 @@ export class MovieController {
     return this.movieService.getBanners();
   }
 
-  @Get('/')
+  @Get('all-movies')
   @ApiQuery({ name: 'movieName', required: false })
   getMovies(@Query('movieName') movieName?: string) {
     return this.movieService.getMovies(movieName);
+  }
+
+  @Get('/paginated-movies')
+  @ApiQuery({ name: 'page', required: true })
+  @ApiQuery({ name: 'itemsPerPage', required: true })
+  @ApiQuery({ name: 'movieName', required: false })
+  getPaginatedMovies(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('itemsPerPage', ParseIntPipe) itemsPerPage: number,
+    @Query('movieName') movieName?: string,
+  ) {
+    return this.movieService.getPaginatedMovies(page, itemsPerPage, movieName);
   }
 }

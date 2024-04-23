@@ -77,4 +77,34 @@ export class MovieService {
       handleError(error);
     }
   }
+
+  async getPaginatedMovies(
+    page: number,
+    itemsPerPage: number,
+    movieName?: string,
+  ) {
+    try {
+      let res;
+      const skip = (page - 1) * itemsPerPage;
+      if (movieName) {
+        res = await this.prisma.movies.findMany({
+          where: {
+            movie_name: {
+              contains: movieName,
+            },
+          },
+          skip,
+          take: itemsPerPage,
+        });
+      } else {
+        res = await this.prisma.movies.findMany({
+          skip,
+          take: itemsPerPage,
+        });
+      }
+      return addResponseInfo(res, 'Successfully get paginated movies');
+    } catch (error) {
+      handleError(error);
+    }
+  }
 }

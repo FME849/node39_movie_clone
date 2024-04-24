@@ -1,6 +1,16 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { addResponseInfo, exclude, handleError } from 'src/utils/helper';
+import {
+  addResponseInfo,
+  exclude,
+  handleError,
+  toSnakeCase,
+} from 'src/utils/helper';
+import { UpdateUserDto } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -56,6 +66,45 @@ export class UserService {
       return addResponseInfo(
         userInfoWithoutPassword,
         'Successfully get user info',
+      );
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async updateUserInfo(
+    payload: Record<string, any>,
+    updateUserParams: UpdateUserDto,
+  ) {
+    try {
+      const { userId } = payload;
+      const userInfo = await this.prisma.users.findUnique({
+        where: {
+          user_id: userId,
+        },
+        include: {
+          book_ticket: false,
+        },
+      });
+
+      if (!userInfo) {
+        throw new BadRequestException('Invalid user');
+      }
+
+      const newUserInfo = {
+        ...userInfo,
+        ...toSnakeCase<UpdateUserDto>(updateUserParams),
+      };
+      const updatedUserInfo = await this.prisma.users.update({
+        where: {
+          user_id: userInfo.user_id,
+        },
+        data: newUserInfo,
+      });
+      const userInfoWithoutPassword = exclude(updatedUserInfo, ['pass_word']);
+      return addResponseInfo(
+        userInfoWithoutPassword,
+        'Successfully updated user',
       );
     } catch (error) {
       handleError(error);

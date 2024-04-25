@@ -7,6 +7,7 @@ import { join } from 'path';
 import { UserModule } from './user/user.module';
 import { TheaterModule } from './theater/theater.module';
 import { MovieModule } from './movie/movie.module';
+import { ShowtimeModule } from './showtime/showtime.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { MovieModule } from './movie/movie.module';
     UserModule,
     TheaterModule,
     MovieModule,
+    ShowtimeModule,
   ],
 })
 export class AppModule {}

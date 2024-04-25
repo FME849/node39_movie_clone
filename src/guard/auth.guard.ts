@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { jwtSecret } from 'src/utils/jwt';
@@ -19,7 +20,7 @@ export class AuthGuard implements CanActivate {
   private validateRequest(request) {
     const { token } = request.headers;
     if (!token) {
-      throw new UnauthorizedException('Token not found');
+      throw new BadRequestException('Token not found');
     }
 
     try {
@@ -28,7 +29,7 @@ export class AuthGuard implements CanActivate {
       });
       request['jwtPayload'] = payload;
     } catch (error) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException(error.message);
     }
 
     return true;

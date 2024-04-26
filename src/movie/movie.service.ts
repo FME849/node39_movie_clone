@@ -43,7 +43,13 @@ export class MovieService {
         ...currentMovie,
         ...toSnakeCase<Partial<movies>>(movie),
       };
-      return addResponseInfo(newMovie, 'Successfully update movie');
+      const result = await this.prisma.movies.update({
+        where: {
+          movie_id: currentMovie.movie_id,
+        },
+        data: newMovie,
+      });
+      return addResponseInfo(result, 'Successfully update movie');
     } catch (error) {
       handleError(error);
     }

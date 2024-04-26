@@ -4,6 +4,7 @@ import {
   Get,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -29,7 +30,7 @@ export class MovieController {
   }
 
   @ApiHeaders([{ name: 'token', required: true }])
-  @Post('update-movie')
+  @Put('update-movie')
   @Roles(Role.Admin)
   @UseGuards(AuthGuard)
   @UseGuards(RolesGuard)

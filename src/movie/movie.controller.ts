@@ -6,14 +6,23 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
-import { CreateMovieDto, UpdateMovieDto } from './dto/movie.dto';
-import { ApiHeaders, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { CreateMovieDto, FileUploadDto, UpdateMovieDto } from './dto/movie.dto';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiHeaders,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Role, Roles } from 'src/decorator/role.decorator';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { RolesGuard } from 'src/guard/roles.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('MovieManagement')
 @Controller('movie')
@@ -52,7 +61,7 @@ export class MovieController {
     return this.movieService.getMovies(movieName);
   }
 
-  @Get('/paginated-movies')
+  @Get('paginated-movies')
   @ApiQuery({ name: 'page', required: true })
   @ApiQuery({ name: 'itemsPerPage', required: true })
   @ApiQuery({ name: 'movieName', required: false })
@@ -62,5 +71,13 @@ export class MovieController {
     @Query('movieName') movieName?: string,
   ) {
     return this.movieService.getPaginatedMovies(page, itemsPerPage, movieName);
+  }
+
+  @Post('upload-image')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: FileUploadDto })
+  uploadImage(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
   }
 }

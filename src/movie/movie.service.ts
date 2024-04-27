@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMovieDto, UpdateMovieDto } from './dto/movie.dto';
 import { addResponseInfo, handleError, toSnakeCase } from 'src/utils/helper';
 import type { movies } from '@prisma/client';
+import { rmSync } from 'fs';
 
 @Injectable()
 export class MovieService {
@@ -109,6 +110,34 @@ export class MovieService {
         });
       }
       return addResponseInfo(res, 'Successfully get paginated movies');
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async uploadImage(imageName: string, movieId: number) {
+    try {
+      const movie = await this.prisma.movies.findUnique({
+        where: {
+          movie_id: movieId,
+        },
+      });
+
+      if (!movie) {
+        rmSync(`${process.cwd()}/public/img/${imageName}`);
+        throw new BadRequestException('Invalid movie');
+      }
+
+      const result = await this.prisma.movies.update({
+        where: {
+          movie_id: movie.movie_id,
+        },
+        data: {
+          ...movie,
+          image: imageName,
+        },
+      });
+      return addResponseInfo(result, 'Successfully upload movie image');
     } catch (error) {
       handleError(error);
     }

@@ -23,6 +23,7 @@ import { Role, Roles } from 'src/decorator/role.decorator';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { RolesGuard } from 'src/guard/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { SharpPipe } from 'src/pipe/sharp.pipe';
 
 @ApiTags('MovieManagement')
 @Controller('movie')
@@ -74,10 +75,16 @@ export class MovieController {
   }
 
   @Post('upload-image')
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard)
+  @UseGuards(RolesGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FileUploadDto })
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
+  uploadImage(
+    @UploadedFile(SharpPipe) imageName: string,
+    @Query('movieId', ParseIntPipe) movieId: number,
+  ) {
+    return this.movieService.uploadImage(imageName, movieId);
   }
 }

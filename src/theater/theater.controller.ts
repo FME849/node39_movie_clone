@@ -21,4 +21,9 @@ export class TheaterController {
   getTheaterGroup(@Query('systemId', ParseIntPipe) systemId: number) {
     return this.theaterService.getTheaterGroups(systemId);
   }
+
+  @Get('showtime-by-movie')
+  getShowtimeByMovie(@Query('movieId', ParseIntPipe) movieId: number) {
+    return this.theaterService.getShowtimeByMovie(movieId);
+  }
 }

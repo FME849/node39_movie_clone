@@ -80,6 +80,7 @@ export class MovieController {
   @UseGuards(RolesGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
+  @ApiHeaders([{ name: 'token', required: true }])
   @ApiBody({ type: FileUploadDto })
   uploadImage(
     @UploadedFile(SharpPipe) imageName: string,

@@ -13,6 +13,7 @@ import { Role, Roles } from 'src/decorator/role.decorator';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { RolesGuard } from 'src/guard/roles.guard';
 import { CreateShowtimeDto } from './dto/showtime.dto';
+import { CreateTicketDto } from './dto/ticket.dto';
 
 @ApiTags('ShowtimeManagement')
 @Controller('showtime')
@@ -31,5 +32,12 @@ export class ShowtimeController {
   @Get('get-showtime')
   getShowtime(@Query('showtimeId', ParseIntPipe) showtimeId: number) {
     return this.showtimeService.getShowtime(showtimeId);
+  }
+
+  // @ApiHeaders([{ name: 'token', required: true }])
+  @Post('create-tickets')
+  // @UseGuards(AuthGuard)
+  createTicket(@Body() createTicketParams: CreateTicketDto) {
+    return this.showtimeService.bookTicket(createTicketParams);
   }
 }

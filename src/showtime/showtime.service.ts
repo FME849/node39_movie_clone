@@ -3,6 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { addResponseInfo, handleError, toSnakeCase } from 'src/utils/helper';
 import { CreateShowtimeDto } from './dto/showtime.dto';
+import { book_ticket } from '@prisma/client';
+import { CreateTicketDto } from './dto/ticket.dto';
 
 @ApiTags('ShowtimeManagement')
 @Injectable()
@@ -83,6 +85,50 @@ export class ShowtimeService {
         chair['is_booked'] = isBooked;
       });
       return addResponseInfo(showtime, 'Successfully get showtime');
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async bookTicket(createTicketParams: CreateTicketDto) {
+    try {
+      const { userId, showtimeId, chairsIds } = createTicketParams;
+      const user = await this.prisma.users.findUnique({
+        where: {
+          user_id: userId,
+        },
+      });
+      const showtime = await this.prisma.showtime.findUnique({
+        where: {
+          showtime_id: showtimeId,
+        },
+      });
+      const chairValidation = (
+        await Promise.all(
+          chairsIds.map((chairId) =>
+            this.prisma.chairs.findUnique({
+              where: {
+                chair_id: chairId,
+              },
+            }),
+          ),
+        )
+      ).filter((chair) => !chair);
+
+      if (!user || !showtime || chairValidation.length > 0) {
+        throw new BadRequestException('Invalid user, showtime or chairs');
+      }
+      const newTickets = chairsIds.map((chairId) =>
+        toSnakeCase<book_ticket>({
+          userId,
+          showtimeId,
+          chairId,
+        }),
+      );
+      const result = await this.prisma.book_ticket.createMany({
+        data: newTickets,
+      });
+      return addResponseInfo(result, 'Successfully create tickets');
     } catch (error) {
       handleError(error);
     }

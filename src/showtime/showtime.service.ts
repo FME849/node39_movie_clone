@@ -49,4 +49,42 @@ export class ShowtimeService {
       handleError(error);
     }
   }
+
+  async getShowtime(showtimeId: number) {
+    try {
+      const showtimeBookedTicket = await this.prisma.book_ticket.findMany({
+        where: {
+          showtime_id: showtimeId,
+        },
+      });
+
+      const showtime = await this.prisma.showtime.findUnique({
+        where: {
+          showtime_id: showtimeId,
+        },
+        include: {
+          theater: {
+            include: {
+              chairs: true,
+            },
+          },
+        },
+      });
+
+      showtime.theater.chairs.forEach((chair) => {
+        chair['ticket_price'] =
+          chair.chair_type === 'VIP'
+            ? showtime.ticket_price * 2
+            : showtime.ticket_price;
+
+        const isBooked = showtimeBookedTicket.some(
+          (ticket) => ticket.chair_id === chair.chair_id,
+        );
+        chair['is_booked'] = isBooked;
+      });
+      return addResponseInfo(showtime, 'Successfully get showtime');
+    } catch (error) {
+      handleError(error);
+    }
+  }
 }

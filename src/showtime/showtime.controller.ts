@@ -1,4 +1,12 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ShowtimeService } from './showtime.service';
 import { ApiHeaders, ApiTags } from '@nestjs/swagger';
 import { Role, Roles } from 'src/decorator/role.decorator';
@@ -18,5 +26,10 @@ export class ShowtimeController {
   @UseGuards(RolesGuard)
   createShowtime(@Body() createShowtimeParams: CreateShowtimeDto) {
     return this.showtimeService.createShowtime(createShowtimeParams);
+  }
+
+  @Get('get-showtime')
+  getShowtime(@Query('showtimeId', ParseIntPipe) showtimeId: number) {
+    return this.showtimeService.getShowtime(showtimeId);
   }
 }

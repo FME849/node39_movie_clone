@@ -17,15 +17,14 @@ model banners {
 }
 
 model book_ticket {
-  ticket_id   Int      @id @default(autoincrement())
   user_id     Int
   showtime_id Int
-  chair_id    Int?
+  chair_id    Int
   users       users    @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "book_ticket_ibfk_1")
   showtime    showtime @relation(fields: [showtime_id], references: [showtime_id], onDelete: NoAction, onUpdate: NoAction, map: "book_ticket_ibfk_2")
 
+  @@id([showtime_id, chair_id])
   @@index([user_id], map: "book_ticket_ibfk_1")
-  @@index([showtime_id], map: "book_ticket_ibfk_2")
 }
 
 model chairs {

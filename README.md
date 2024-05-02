@@ -28,8 +28,8 @@ Coming soon
 
 ## Admin account
 
-email: admin.example@gmail.com
-password: 123
+- email: admin.example@gmail.com
+- password: 123
 
 ## Description
 

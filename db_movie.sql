@@ -4,7 +4,7 @@
 -- https://tableplus.com/
 --
 -- Database: db_movie
--- Generation Time: 2024-04-14 18:34:26.6680
+-- Generation Time: 2024-04-30 10:58:55.4920
 -- -------------------------------------------------------------
 
 
@@ -32,9 +32,9 @@ DROP TABLE IF EXISTS `book_ticket`;
 CREATE TABLE `book_ticket` (
   `user_id` int NOT NULL,
   `showtime_id` int NOT NULL,
-  `chair_id` int DEFAULT NULL,
-  PRIMARY KEY (`user_id`,`showtime_id`),
-  KEY `showtime_id` (`showtime_id`),
+  `chair_id` int NOT NULL,
+  PRIMARY KEY (`showtime_id`,`chair_id`),
+  KEY `book_ticket_ibfk_1` (`user_id`),
   CONSTRAINT `book_ticket_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
   CONSTRAINT `book_ticket_ibfk_2` FOREIGN KEY (`showtime_id`) REFERENCES `showtime` (`showtime_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -57,13 +57,13 @@ CREATE TABLE `movies` (
   `trailer` varchar(100) DEFAULT NULL,
   `image` varchar(100) DEFAULT NULL,
   `description` varchar(225) NOT NULL,
-  `premiere_date` date DEFAULT NULL,
+  `premiere_date` date NOT NULL,
   `rating` int DEFAULT NULL,
-  `is_hot` tinyint(1) DEFAULT NULL,
-  `is_showing` tinyint(1) DEFAULT NULL,
-  `is_comming_soon` tinyint(1) DEFAULT NULL,
+  `is_hot` tinyint(1) DEFAULT '0',
+  `is_showing` tinyint(1) DEFAULT '0',
+  `is_coming_soon` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`movie_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `showtime`;
 CREATE TABLE `showtime` (
@@ -77,7 +77,7 @@ CREATE TABLE `showtime` (
   KEY `movie_id` (`movie_id`),
   CONSTRAINT `showtime_ibfk_1` FOREIGN KEY (`theater_id`) REFERENCES `theater` (`theater_id`),
   CONSTRAINT `showtime_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`movie_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `theater`;
 CREATE TABLE `theater` (
@@ -167,6 +167,14 @@ INSERT INTO `chairs` (`chair_id`, `chair_name`, `chair_type`, `theater_id`) VALU
 (44, 'C4', 'VIP', 3),
 (45, 'C5', 'VIP', 3);
 
+INSERT INTO `movies` (`movie_id`, `movie_name`, `trailer`, `image`, `description`, `premiere_date`, `rating`, `is_hot`, `is_showing`, `is_coming_soon`) VALUES
+(2, 'Mùa hè của Luca', 'https://youtu.be/krnkkkzWfgY', '1714237336966-mua_he-cua_Luca.webp', '\'Mùa Hè Của Luca\' kể về chuyến hành trình của cậu bé Luca tại hòn đảo Portorosso thuộc vùng biển Địa Trung Hải ở Ý tuyệt đẹp.', '2024-04-18', 5, 0, 1, 0);
+
+INSERT INTO `showtime` (`showtime_id`, `theater_id`, `movie_id`, `showtime_date`, `ticket_price`) VALUES
+(1, 1, 2, '2024-04-30 19:30:00', 10000),
+(2, 2, 2, '2024-04-30 09:15:00', 10000),
+(3, 2, 2, '2024-04-30 15:30:00', 10000);
+
 INSERT INTO `theater` (`theater_id`, `theater_name`, `group_id`) VALUES
 (1, 'Rap1', 1),
 (2, 'Rap2', 1),
@@ -183,7 +191,7 @@ INSERT INTO `theater_system` (`system_id`, `system_name`, `logo`) VALUES
 (2, 'Galaxy', 'default-theater-logo.webp');
 
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `phone`, `user_name`, `pass_word`, `user_type`) VALUES
-(1, NULL, 'b.example@gmail.com', NULL, NULL, '$2b$10$o2ebT7rj4wywpGwwxg3yT.BmLSHmyKlEBuNynyqQDqXRkmIESRZlq', 'USER'),
+(1, 'Nguyen Van B', 'b.example@gmail.com', '0123888999', 'b.123', '$2b$10$o2ebT7rj4wywpGwwxg3yT.BmLSHmyKlEBuNynyqQDqXRkmIESRZlq', 'USER'),
 (2, NULL, 'a.example@gmail.com', NULL, NULL, '$2b$10$fMNG00axAcLbEkMHHh/taeN6kVKzVyfRI.//3nEX0KXZoG03rsDe.', 'USER'),
 (3, 'Tuan Tran', 'admin.example@gmail.com', NULL, 'fme849', '$2b$10$XBPVsNU1A5LtOG7ihQVNHOmdbwmaX4I3NYJ0Wp6tYOc9hPdgtA02y', 'ADMIN'),
 (4, NULL, 'c.example@gmail.com', NULL, NULL, '$2b$10$ZV0dhuWwhEdcMhBfmcyX2ujJVW2UHaX0dy2wPdw3wAAFK6d9lamJ6', 'ADMIN'),
